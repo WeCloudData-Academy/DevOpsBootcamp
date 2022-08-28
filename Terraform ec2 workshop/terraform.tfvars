@@ -7,8 +7,7 @@ instance_type = "t2.micro"
 public_key_location = "~/.ssh/id_rsa.pub"
 image_name = "amzn2-ami-hvm-*-x86_64-gp2"
 instance_name = [
-    "DevOpsBootcampInstance1",
-    "DevOpsBootcampInstance2",
-    "DevOpsBootcampInstance3",
-    "DevOpsBootcampInstance4"
+    "DevOpsBootcampDev",
+    "DevOpsBootcampProd",
+    "DevOpsBootcampTest"
 ]
