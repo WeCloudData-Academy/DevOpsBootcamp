@@ -11,3 +11,8 @@ instance_name = [
     "DevOpsBootcampProd",
     "DevOpsBootcampTest"
 ]
+ingress_ports = [
+  "80",
+  "22",
+  "8080"
+]

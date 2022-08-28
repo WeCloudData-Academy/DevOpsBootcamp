@@ -15,6 +15,7 @@ variable instance_type{}
 variable public_key_location{}
 variable image_name{}
 variable instance_name{type = set(string)}
+variable "ingress_ports" {}
 
 # create a new vpc
 resource "aws_vpc" "DevOpsBootcamp-vpc" {
@@ -69,18 +70,14 @@ resource "aws_security_group" "DevOpsBootcamp-sg" {
     name = "DevOpsBootcamp-sg"
     vpc_id = aws_vpc.DevOpsBootcamp-vpc.id
 
-    ingress {
-        from_port = 22
-        to_port = 22 # a range, from 22 to 22
-        protocol = "tcp"
-        cidr_blocks = [var.my_ip] # list of IP address allowed to access the server
-    }
-
-    ingress {
-        from_port = 8080
-        to_port = 8080
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
+    dynamic "ingress" {
+        for_each = var.ingress_ports
+        content {
+            from_port = ingress.value
+            to_port = ingress.value
+            protocol = "tcp"
+            cidr_blocks = [var.my_ip]
+        }
     }
 
     egress {

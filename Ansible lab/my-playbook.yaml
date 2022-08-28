@@ -1,0 +1,64 @@
+- name: Install Docker
+  hosts: DevOpsBootcamp-servers
+  # execute the tasks as a root user
+  become: yes
+  tasks:
+    - name: install Docker
+      yum:
+        name: docker
+        update_cache: yes
+        state: present
+
+    - name: Install Docker-compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-{{lookup('pipe','uname -s')}}-{{lookup('pipe', 'uname -m')}}
+        # destination of downloaded file
+        dest: /usr/local/bin/docker-compose
+        # change permission of the downloaded file
+        mode: +x
+
+    - name: Start Docker 
+      # use system module to start docker 
+      systemd:
+        name: docker
+        state: started
+
+# for ec2-user to pull and run images, you need to add ec2-user to docker group
+    - name: Add ec2-user to docker group
+      # use user module
+      user:
+        name: ec2-user
+        groups: docker
+        # append ec2 to docker group
+        append: yes
+      # Adding a user to a group only takes effect after reconnecting to the server.
+    - name: reconnect to server
+      meta: reset_connection
+
+
+    - name: pip install requrests
+      pip:
+        name: 
+          - requests
+          - docker
+        state: present
+
+
+    - name: Pull an image
+      docker_image:
+        name: junglepolice/webpage
+        source: pull
+    - name: Run Webapp
+      docker_container:
+        # use variables to define name of a container instead of hard-coding it here
+        name: mywebapp
+        image: junglepolice/webpage
+        # state can be started, absent, stopped or present
+        state: started
+        ports: 80:80
+    - name: Container status
+      docker_container_info:
+        name: mywebapp
+      register: result
+      # check out the result of my container
+    - debug: msg={{result.container.State}}
