@@ -130,7 +130,7 @@ resource "aws_instance" "DevOpsBootcamp-server"{
     key_name = aws_key_pair.ssh-key.key_name 
 
     # run nginx docker container in the ec2-user
-    user_data = file("entry-script.sh")
+    # user_data = file("entry-script.sh")
     tags = {
         Name: each.value
     }
@@ -146,12 +146,14 @@ output "ec2_public_ips" {
 
 # save the public ips of the servers to a file
 resource "local_file" "public_ips" {
-    filename = "./DevOpsBootcampInstancePublicIPs.txt"
+    filename = "../Ansible lab/hosts"
     depends_on = [
       aws_instance.DevOpsBootcamp-server
     ]
     # convert map to string
-    content  = join(
-       "\n", [for key, server in aws_instance.DevOpsBootcamp-server :  "${key}: ${server.public_ip}"]
-    )
+    content  = format("%s%s%s%s", 
+                    join( "\n", [for key, server in aws_instance.DevOpsBootcamp-server :  "${key} ansible_host=${server.public_ip}"]),
+                    "\n\n[DevOpsBootcamp-servers]\n",
+                    join("\n",[for key, server in aws_instance.DevOpsBootcamp-server :  "${key}"]),
+                    "\n\n[DevOpsBootcamp-servers:vars]\nansible_user=ec2-user\nansible_ssh_private_key_file=~/.ssh/id_rsa")
 }
