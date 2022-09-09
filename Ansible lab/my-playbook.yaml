@@ -1,4 +1,4 @@
-- name: Install Docker
+- name: Deploy My Webapp
   hosts: DevOpsBootcamp-servers
   # execute the tasks as a root user
   become: yes
@@ -44,7 +44,7 @@
         state: present
 
 
-    - name: Pull an image
+    - name: Pull an image # https://docs.ansible.com/ansible/2.9/modules/docker_image_module.html#docker-image-module
       docker_image:
         name: junglepolice/webpage
         source: pull
