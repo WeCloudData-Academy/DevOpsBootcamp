@@ -34,8 +34,6 @@ In one Github Repository, you can have multiple workflows.
 
 - Issue.
 
-- Schedule
-
 - External Event
 
 ```yaml
@@ -46,6 +44,14 @@ on:
       - main
 ```
 
+```yaml
+on:
+  schedule:
+  # minute hour day-of-month month day-of-week
+    - cron: '0 0 * * *'
+    - cron: '0 5 */1 * *'
+```
+
 ## Jobs
 In one workflow you can have multiple jobs.
 
@@ -54,7 +60,7 @@ Jobs can be in parallel or in sequence.
 key word: `needs`
 ```yaml
 jobs:
-  run_tests:
+  test:
     runs-on: ubuntu-latest
     steps: ...
   build:
@@ -78,7 +84,7 @@ jobs:
 ## Actions
 https://github.com/marketplace?type=actions
 
-Actions are the building blocks that power your workflow. They are like functions in Python. You can either write your own action and reference it or simply just use an anction from a public repository.
+Actions are the building blocks that power your workflow. They are like functions in Python. You can either write your own action and reference it or simply just use an action from a public repository.
 
 To use an action, use the key word `uses`
 To provide arguments to an action: use the key word `with`
