@@ -61,4 +61,5 @@
         name: mywebapp
       register: result
       # check out the result of my container
+      # The debug module prints statements during execution and can be useful for debugging variables or expressions without necessarily halting the playbook.
     - debug: msg={{result.container.State}}
